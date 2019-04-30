@@ -18,21 +18,21 @@ dg = []
 dg.append(dgdu)
 dg.append(dgdv)
 
-print("g=", pretty(g),"\n")
-print("g_inv=", pretty(g_inv), "\n")
-print("g_partials=", pretty(dg), "\n")
+# print("g=", pretty(g),"\n")
+# print("g_inv=", pretty(g_inv), "\n")
+# print("g_partials=", pretty(dg), "\n")
 
 #Christoffel Symbols (as symbolic expressions)
 
 r = []
 
 for i in range(2):
-    for j in range(2):
+    for k in range(2):
         r_vec = []
-        for m in range(2):
+        for l in range(2):
             component = 0 # component indexed by m
-            for k in range(2):
-                component += (0.5*g_inv[k,m]*(dg[j][i,k] + dg[i][j,k] - dg[k][i, j]))
+            for m in range(2):
+                component += (0.5*g_inv[i,m]*(dg[l][m,k] + dg[k][m,l] - dg[m][k, l]))
             r_vec.append(simplify(component))
         r.append(r_vec)
 
@@ -41,7 +41,7 @@ r = reshape(r, (2,2,2))
 for i in range(len(r)):
     for j in range(len(r)):
         for k in range(len(r)):
-            print("r at index", (i+1,j+1,k+1), "=", r[i][j][k])
+            print("r", (i+1,j+1,k+1), "=", r[i][j][k])
 
 # Christoffel Symbols (as functions)
 def r1_11(x,y):
@@ -68,7 +68,8 @@ def f(x,t):
     v_dot = x[3]
     u_ddot = -r1_11(x[0],x[1])*(x[2]**2)-2*r1_12(x[0],x[1])*x[2]*x[3]-r1_22(x[0],x[1])*(x[3]**2)
     v_ddot = -r2_11(x[0],x[1])*(x[2]**2)-2*r2_12(x[0],x[1])*x[2]*x[3]-r2_22(x[0],x[1])*(x[3]**2)
-    print(x)
+    # print(r1_11(x[0],x[1]), r1_12(x[0],x[1]), r1_21(x[0],x[1]), r1_22(x[0],x[1]))
+    # print(r2_11(x[0],x[1]), r2_12(x[0],x[1]), r2_21(x[0],x[1]), r2_22(x[0],x[1]),"\n")
     return array([u_dot, v_dot, u_ddot, v_ddot], float)
 
 #initial conditions
@@ -87,21 +88,21 @@ xpoints = [] # x array
 
 e = 0.1
 
-for t in tqdm(tpoints):
-    if abs((x[0]**2+x[1]**2) - 1) < e**2:
-        break # break if "sufficiently" near boundary
-    xpoints.append(x)
-    k1 = h*f(x,t)
-    k2 = h*f(x+0.5*k1,t+0.5*h)
-    k3 = h*f(x+0.5*k2,t+0.5*h)
-    k4 = h*f(x+k3,t+h)
-    x = x + (1.0/6)*(k1+2*k2+2*k3+k4)
+# for t in tqdm(tpoints):
+#     if abs((x[0]**2+x[1]**2) - 1) < e**2:
+#         break # break if "sufficiently" near boundary
+#     xpoints.append(x)
+#     k1 = h*f(x,t)
+#     k2 = h*f(x+0.5*k1,t+0.5*h)
+#     k3 = h*f(x+0.5*k2,t+0.5*h)
+#     k4 = h*f(x+k3,t+h)
+#     x = x + (1.0/6)*(k1+2*k2+2*k3+k4)
 
 #scipy.integrate.odeint
-#xpoints = odeint(f, x, tpoints)
+xpoints = odeint(f, x, tpoints)
 
 p = array(xpoints) #converting the results to a 2D-array
-print("xpoints:", p)
+#print("xpoints:", p)
 
 #u(t) plot
 plt.figure()
@@ -110,7 +111,7 @@ plt.xlabel("t")
 plt.ylabel("u(t)")
 plt.show()
 
-#v(t) plot (fox)
+#v(t) plot
 plt.figure()
 plt.plot(tpoints[:len(p)],p[:,1])
 plt.xlabel("t")
