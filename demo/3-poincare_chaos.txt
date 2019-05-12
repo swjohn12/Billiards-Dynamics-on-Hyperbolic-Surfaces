@@ -1,0 +1,1 @@
+A variant of Poincare metric (with u and v raised to the power of 3) gives rise to chaos even if the boundary is a smooth focusing circle.  

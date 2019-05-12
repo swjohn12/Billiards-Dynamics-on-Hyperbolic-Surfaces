@@ -1,0 +1,1 @@
+Particle shoot at angle (1 rad) other than some fraction of pi results in a dense orbit in the euclidean circular table. 

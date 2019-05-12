@@ -1,0 +1,1 @@
+Particle shoot at pi/3 (rads) from the tangent results in a periodic trajectory with period 6 in the euclidean circular table. 
